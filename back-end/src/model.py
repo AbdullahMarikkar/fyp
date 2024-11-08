@@ -1,29 +1,33 @@
 # src/model.py
 
-import tensorflow as tf
-from tensorflow.keras import layers, models
+import torch
+import torch.nn as nn
+import torchvision.models as models
+
+class DualHeadModel(nn.Module):
+    def __init__(self):
+        super(DualHeadModel, self).__init__()
+        # Load a pretrained model and freeze it
+        self.base_model = models.mobilenet_v2(pretrained=True)
+        for param in self.base_model.parameters():
+            param.requires_grad = False
+
+        # Replace the classifier with global average pooling
+        self.base_model = nn.Sequential(*list(self.base_model.children())[:-1], nn.AdaptiveAvgPool2d((1, 1)))
+
+        # Thermal classification head
+        self.thermal_head = nn.Linear(1280, 2)
+        
+        # Natural classification head
+        self.natural_head = nn.Linear(1280, 2)
+
+    def forward(self, x):
+        x = self.base_model(x)
+        x = x.view(x.size(0), -1)  # Flatten
+        thermal_output = self.thermal_head(x)
+        natural_output = self.natural_head(x)
+        return thermal_output, natural_output
 
 def create_model():
-    """Define a CNN model with two output heads for dual classification."""
-    base_model = tf.keras.applications.MobileNetV2(input_shape=(224, 224, 3),
-                                                   include_top=False,
-                                                   weights='imagenet')
-    base_model.trainable = False
-
-    inputs = layers.Input(shape=(224, 224, 3))
-    x = base_model(inputs, training=False)
-    x = layers.GlobalAveragePooling2D()(x)
-
-    # Thermal state classification head
-    thermal_output = layers.Dense(2, activation='softmax', name='thermal_output')(x)
-
-    # Natural state classification head
-    natural_output = layers.Dense(2, activation='softmax', name='natural_output')(x)
-
-    model = models.Model(inputs=inputs, outputs=[thermal_output, natural_output])
-
-    # Compile model with categorical crossentropy for both outputs
-    model.compile(optimizer='adam',
-                  loss={'thermal_output': 'categorical_crossentropy', 'natural_output': 'categorical_crossentropy'},
-                  metrics=['accuracy'])
+    model = DualHeadModel()
     return model
