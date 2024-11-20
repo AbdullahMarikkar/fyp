@@ -1,4 +1,5 @@
-image,thermal_state,natural_state
-img1.jpg,unheated,natural
-img2.jpg,heated,natural
-img3.jpg,unheated,natural
+image,state
+img1.jpg,natural
+img2.jpg,heated
+img3.jpg,natural
+img4.jpg,synthetic

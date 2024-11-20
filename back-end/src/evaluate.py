@@ -1,49 +1,49 @@
-# src/evaluate.py
-
+import os
 import torch
+from model import SingleHeadModel
+from preprocess import preprocess_image, load_labels
+from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import classification_report
-from torch.utils.data import DataLoader
-from model import create_model
-from train import ImageDataset, load_labels, label_map
 
-# Load model and data
-model = create_model()
+class ImageDataset(Dataset):
+    def __init__(self, image_dir, labels, label_map):
+        self.image_dir = image_dir
+        self.labels = labels
+        self.label_map = label_map
+        self.image_list = list(labels.keys())  # List of filenames
+
+    def __len__(self):
+        return len(self.image_list)
+
+    def __getitem__(self, idx):
+        filename = self.image_list[idx]
+        label = self.labels[filename]
+        image_path = os.path.join(self.image_dir, filename)
+        img = preprocess_image(image_path)
+        return img, self.label_map[label]
+
+# Define label mapping and load labels
+label_map = {'heated': 0, 'natural': 1, 'synthetic': 2}
+labels = load_labels('data/labels.csv')
+image_dir = 'data/images/'
+
+# Initialize dataset and DataLoader
+dataset = ImageDataset(image_dir, labels, label_map)
+data_loader = DataLoader(dataset, batch_size=32, shuffle=False)
+
+# Load the trained model and evaluate
+model = SingleHeadModel()
 model.load_state_dict(torch.load('model.pth'))
 model.eval()
 
-labels = load_labels('data/labels.csv')
-images = list(labels.keys())
-val_dataset = ImageDataset(images, labels, label_map)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-
-# Evaluate
-all_thermal_labels = []
-all_natural_labels = []
-all_thermal_preds = []
-all_natural_preds = []
+all_labels = []
+all_preds = []
 
 with torch.no_grad():
-    for imgs, y_thermal, y_natural in val_loader:
-        thermal_pred, natural_pred = model(imgs)
-        
-        all_thermal_labels.extend(y_thermal.numpy())
-        all_natural_labels.extend(y_natural.numpy())
-        all_thermal_preds.extend(torch.argmax(thermal_pred, dim=1).numpy())
-        all_natural_preds.extend(torch.argmax(natural_pred, dim=1).numpy())
+    for imgs, labels in data_loader:
+        outputs = model(imgs)
+        _, preds = torch.max(outputs, 1)
+        all_labels.extend(labels.numpy())
+        all_preds.extend(preds.numpy())
 
-# Classification reports
-print("Thermal State Classification Report:")
-print(classification_report(
-    all_thermal_labels, 
-    all_thermal_preds, 
-    target_names=['heated', 'unheated'], 
-    labels=[0, 1]
-))
-
-print("\nNatural State Classification Report:")
-print(classification_report(
-    all_natural_labels, 
-    all_natural_preds, 
-    target_names=['natural', 'synthetic'], 
-    labels=[0, 1]
-))
+print(classification_report(all_labels, all_preds, target_names=['heated', 'natural', 'synthetic']))
