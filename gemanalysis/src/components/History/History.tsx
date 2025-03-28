@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import {
   gridTableHeaderStyle,
@@ -19,7 +19,7 @@ export interface HistoryType {
   result: string;
   satisfactory: string;
   user_id: number;
-  image: Base64URLString | null;
+  image: string | null;
 }
 
 function History() {

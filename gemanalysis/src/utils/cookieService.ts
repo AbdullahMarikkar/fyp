@@ -1,4 +1,4 @@
-import Cookie, { CookieGetOptions, CookieSetOptions } from "universal-cookie";
+import Cookie, { CookieSetOptions } from "universal-cookie";
 
 const cookieOptions: CookieSetOptions = {
   path: "/",
