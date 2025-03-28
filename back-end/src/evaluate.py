@@ -5,6 +5,7 @@ from preprocess import preprocess_image, load_labels
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import classification_report
 
+
 class ImageDataset(Dataset):
     def __init__(self, image_dir, labels, label_map):
         self.image_dir = image_dir
@@ -22,10 +23,11 @@ class ImageDataset(Dataset):
         img = preprocess_image(image_path)
         return img, self.label_map[label]
 
+
 # Define label mapping and load labels
-label_map = {'heated': 0, 'natural': 1, 'synthetic': 2}
-labels = load_labels('data/labels.csv')
-image_dir = 'data/images/'
+label_map = {"heated": 0, "natural": 1, "synthetic": 2}
+labels = load_labels("data/labels.csv")
+image_dir = "data/images/"
 
 # Initialize dataset and DataLoader
 dataset = ImageDataset(image_dir, labels, label_map)
@@ -33,7 +35,7 @@ data_loader = DataLoader(dataset, batch_size=39, shuffle=True)
 
 # Load the trained model and evaluate
 model = SingleHeadModel()
-model.load_state_dict(torch.load('model.pth'))
+model.load_state_dict(torch.load("model.pth"))
 model.eval()
 
 all_labels = []
@@ -46,4 +48,8 @@ with torch.no_grad():
         all_labels.extend(labels.numpy())
         all_preds.extend(preds.numpy())
 
-print(classification_report(all_labels, all_preds, target_names=['heated', 'natural', 'synthetic']))
+print(
+    classification_report(
+        all_labels, all_preds, target_names=["heated", "natural", "synthetic"]
+    )
+)

@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader, Dataset
 from preprocess import preprocess_image, load_labels, enhance_image
 from model import SingleHeadModel
 
+
 class ImageDataset(Dataset):
     def __init__(self, image_dir, labels, label_map, augment=False):
         self.image_dir = image_dir
@@ -23,13 +24,14 @@ class ImageDataset(Dataset):
         image_path = os.path.join(self.image_dir, filename)
         img = preprocess_image(image_path)
         if self.augment:
-            img = enhance_image(img,'data/enhanced',filename)
+            img = enhance_image(img, "data/enhanced", filename)
         return img, self.label_map[label]
 
+
 # Define label mapping and load labels
-label_map = {'heated': 0, 'natural': 1, 'synthetic': 2}
-labels = load_labels('data/labels.csv')
-image_dir = 'data/images/'
+label_map = {"heated": 0, "natural": 1, "synthetic": 2}
+labels = load_labels("data/labels.csv")
+image_dir = "data/images/"
 
 # Load dataset and initialize DataLoader
 dataset = ImageDataset(image_dir, labels, label_map, augment=False)
@@ -51,7 +53,7 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-    print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}")
+    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}")
 
 # Save model
-torch.save(model.state_dict(), 'model.pth')
+torch.save(model.state_dict(), "model.pth")
