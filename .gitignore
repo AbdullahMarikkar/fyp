@@ -6,3 +6,4 @@ dist
 /backend/data/enhanced
 /backend/data/images
 /backend/data/test
+/__pycache__
