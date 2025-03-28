@@ -92,8 +92,8 @@ async def classifyImage(file: UploadFile = File(...), gemType: str = Form(...)):
 async def saveResult(
     response: Response,
     result: schemas.Result,
+    authorization: Annotated[str, Header()],
     db: Session = Depends(get_db),
-    authorization: Annotated[str, Header()] = None,
 ):
     requested_user = await jwtService.verify_token(authorization.split(" ")[1])
     print("Requested User", requested_user.id)
@@ -113,7 +113,8 @@ def encode_image(image_path):
 
 @app.get("/history")
 async def getHistory(
-    db: Session = Depends(get_db), authorization: Annotated[str, Header()] = None
+    authorization: Annotated[str, Header()],
+    db: Session = Depends(get_db),
 ):
     requested_user = await jwtService.verify_token(authorization.split(" ")[1])
     results = crud.get_results(db=db, user_id=requested_user.id)
@@ -143,7 +144,7 @@ async def login(
     ):
         print("Password is Incorrect")
         raise HTTPException(status_code=400, detail="Password is Incorrect")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES))
     access_token = jwtService.create_access_token(
         data={"sub": db_user.email}, expires_delta=access_token_expires
     )
@@ -151,7 +152,7 @@ async def login(
         key="accessToken",
         value=access_token,
         expires=datetime.now(timezone.utc)
-        + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+        + timedelta(minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES)),
         domain="localhost",
         samesite="lax",
         secure=False,

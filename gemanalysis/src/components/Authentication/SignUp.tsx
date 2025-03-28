@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import SignUpSchema from "./SignUpSchema";
 import { useSignUp } from "../../service/reactQueryFiles/useSignUp";
 import LoadingIndicator from "../../utils/LoadingIndication";
+import TextFieldUtil from "./TextFieldUtil";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -76,82 +77,38 @@ function SignUp() {
                     margin: "10px",
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Typography sx={{ color: "purple" }}>Email</Typography>
-                    <TextField
-                      label="Enter Your Email"
-                      type="email"
-                      name="email"
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      sx={{ borderRadius: "20px", border: 1, width: "100%" }}
-                    />
-                    {errors.email && touched.email && (
-                      <Typography sx={{ fontSize: "10px", color: "red" }}>
-                        {errors.email}
-                      </Typography>
-                    )}
-                  </Box>
+                  <TextFieldUtil
+                    label="Enter Your Email"
+                    type="email"
+                    name="email"
+                    values={values.email}
+                    errors={errors.email}
+                    handleBlur={handleBlur}
+                    handleChange={handleChange}
+                    touched={touched.email}
+                  />
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "5px",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Typography sx={{ color: "purple" }}>Username</Typography>
-                    <TextField
-                      label="Enter Your Username"
-                      type="text"
-                      name="username"
-                      value={values.username}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      sx={{ borderRadius: "20px", border: 1, width: "100%" }}
-                    />
-                    {errors.username && touched.username && (
-                      <Typography sx={{ fontSize: "10px", color: "red" }}>
-                        {errors.username}
-                      </Typography>
-                    )}
-                  </Box>
+                  <TextFieldUtil
+                    label="Enter Your Username"
+                    type="text"
+                    name="username"
+                    values={values.username}
+                    errors={errors.username}
+                    handleBlur={handleBlur}
+                    handleChange={handleChange}
+                    touched={touched.username}
+                  />
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "5px",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Typography sx={{ color: "purple" }}>
-                      Mobile Number
-                    </Typography>
-                    <TextField
-                      label="Enter Your Mobile Number"
-                      type="number"
-                      name="mobile"
-                      value={values.mobile}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      sx={{ borderRadius: "20px", border: 1, width: "100%" }}
-                    />
-                    {errors.mobile && touched.mobile && (
-                      <Typography sx={{ fontSize: "10px", color: "red" }}>
-                        {errors.mobile}
-                      </Typography>
-                    )}
-                  </Box>
+                  <TextFieldUtil
+                    label="Enter Your Mobile Number"
+                    type="number"
+                    name="mobile"
+                    values={values.mobile}
+                    errors={errors.mobile}
+                    handleBlur={handleBlur}
+                    handleChange={handleChange}
+                    touched={touched.mobile}
+                  />
                   <Box
                     sx={{
                       display: "flex",
