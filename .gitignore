@@ -3,3 +3,6 @@
 node_modules
 dist
 /dist
+/backend/data/enhanced
+/backend/data/images
+/backend/data/test
