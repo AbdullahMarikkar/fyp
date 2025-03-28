@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ACCESS_TOKEN_EXPIRE_MINUTES = ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv(
-    "ACCESS_TOKEN_EXPIRE_MINUTES"
+    "ACCESS_TOKEN_EXPIRE_MINUTES", "15"
 )
 
 models.Base.metadata.create_all(bind=database.engine)
@@ -137,7 +137,8 @@ async def login(
     user: schemas.UserLogIn,
     db: Session = Depends(get_db),
 ):
-    print("Params", user)
+    if not ACCESS_TOKEN_EXPIRE_MINUTES.isdigit():
+        raise ValueError("ACCESS_TOKEN_EXPIRE_MINUTES must be a valid number.")
     db_user = crud.get_user_by_email(db, email=user.email)
     if not bcrypt.checkpw(
         bytes(user.password, "utf-8"), bytes(db_user.password, "utf-8")
@@ -151,14 +152,12 @@ async def login(
     response.set_cookie(
         key="accessToken",
         value=access_token,
-        expires=datetime.now(timezone.utc)
-        + timedelta(minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES)),
+        expires=datetime.now(timezone.utc) + access_token_expires,
         domain="localhost",
         samesite="lax",
         secure=False,
         max_age=9999,
     )
-    print("Cookie", access_token)
     return {"message": "Logged In Successfully", "data": db_user}
 
 
