@@ -6,4 +6,7 @@ dist
 /backend/data/enhanced
 /backend/data/images
 /backend/data/test
-/__pycache__
+__pycache__
+back-end/data/enhanced
+back-end/data/images
+back-end/data/test
