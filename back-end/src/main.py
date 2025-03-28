@@ -14,16 +14,20 @@ from fastapi import (
     Header,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from .inference import classify_image
-from .database import models, schemas, crud
+from inference import classify_image
 import uuid
 from sqlalchemy.orm import Session
-from .database.database import SessionLocal, engine
-from .utils.jwtService import create_access_token, verify_token
+from database import database, models, schemas, crud
+from utils import jwtService
+from dotenv import load_dotenv
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+load_dotenv()
 
-models.Base.metadata.create_all(bind=engine)
+ACCESS_TOKEN_EXPIRE_MINUTES = ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv(
+    "ACCESS_TOKEN_EXPIRE_MINUTES"
+)
+
+models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
@@ -42,7 +46,7 @@ app.add_middleware(
 
 # Dependency
 def get_db():
-    db = SessionLocal()
+    db = database.SessionLocal()
     try:
         yield db
     finally:
@@ -89,9 +93,9 @@ async def saveResult(
     response: Response,
     result: schemas.Result,
     db: Session = Depends(get_db),
-    authorization: Annotated[str | None, Header()] = None,
+    authorization: Annotated[str, Header()] = None,
 ):
-    requested_user = await verify_token(authorization.split(" ")[1])
+    requested_user = await jwtService.verify_token(authorization.split(" ")[1])
     print("Requested User", requested_user.id)
     # Send random gem type and satisfactory level for now
     print("Result", result)
@@ -109,9 +113,9 @@ def encode_image(image_path):
 
 @app.get("/history")
 async def getHistory(
-    db: Session = Depends(get_db), authorization: Annotated[str | None, Header()] = None
+    db: Session = Depends(get_db), authorization: Annotated[str, Header()] = None
 ):
-    requested_user = await verify_token(authorization.split(" ")[1])
+    requested_user = await jwtService.verify_token(authorization.split(" ")[1])
     results = crud.get_results(db=db, user_id=requested_user.id)
     print("Result", results)
     # Attach image paths
@@ -140,7 +144,7 @@ async def login(
         print("Password is Incorrect")
         raise HTTPException(status_code=400, detail="Password is Incorrect")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
+    access_token = jwtService.create_access_token(
         data={"sub": db_user.email}, expires_delta=access_token_expires
     )
     response.set_cookie(

@@ -5,7 +5,6 @@ import Login from "./components/Authentication/Login";
 import SignUp from "./components/Authentication/SignUp";
 import { getAccessToken } from "./utils/cookieService";
 import History from "./components/History/History";
-import HistoryTest from "./components/History/History-Test";
 
 const isAuthenticated = () => {
   console.log("Get Access Token ", getAccessToken());
@@ -29,8 +28,7 @@ export const router = createBrowserRouter([
     path: "history",
     element: (
       <AuthGuard isAuthenticated={isAuthenticated}>
-        {/* <History /> */}
-        <HistoryTest />
+        <History />
       </AuthGuard>
     ),
   },

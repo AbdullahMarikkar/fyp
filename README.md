@@ -10,6 +10,6 @@ run "npm install"
 Then run "npm run dev" on command shell
 
 To Run Backend :
-Go to back-end Folder
+Go to backend Folder
 run "pip install"
 Then run "uvicorn src.main:app --host localhost --port 8000 --reload" on command shell

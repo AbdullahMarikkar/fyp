@@ -1,13 +1,14 @@
+import jwt
 from datetime import datetime, timezone, timedelta
 from fastapi import HTTPException, status
-import jwt
-from ..database.crud import get_user_by_email
-from ..database.models import TokenData
-from ..database.database import SessionLocal
+from database import crud, database, models
+from dotenv import load_dotenv
+import os
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+load_dotenv()
+
+SECRET_KEY = SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = ALGORITHM = os.getenv("ALGORITHM")
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -39,10 +40,10 @@ async def verify_token(token):
         email = payload.get("sub")
         if email is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = models.TokenData(email=email)
     except jwt.InvalidTokenError:
         raise credentials_exception
-    user = get_user_by_email(db=SessionLocal(), email=token_data.email)
+    user = crud.get_user_by_email(db=database.SessionLocal(), email=token_data.email)
     if user is None:
         raise credentials_exception
     return user
