@@ -23,7 +23,7 @@ class ImageDataset(Dataset):
         image_path = os.path.join(self.image_dir, filename)
         img = preprocess_image(image_path)
         if self.augment:
-            img = enhance_image(img)
+            img = enhance_image(img,'data/enhanced',filename)
         return img, self.label_map[label]
 
 # Define label mapping and load labels
@@ -32,8 +32,8 @@ labels = load_labels('data/labels.csv')
 image_dir = 'data/images/'
 
 # Load dataset and initialize DataLoader
-dataset = ImageDataset(image_dir, labels, label_map, augment=True)
-train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+dataset = ImageDataset(image_dir, labels, label_map, augment=False)
+train_loader = DataLoader(dataset, batch_size=39, shuffle=True)
 
 # Initialize model, loss function, and optimizer
 model = SingleHeadModel()
@@ -41,7 +41,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
-num_epochs = 10
+num_epochs = 20
 for epoch in range(num_epochs):
     model.train()
     for imgs, labels in train_loader:
