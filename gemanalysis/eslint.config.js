@@ -13,8 +13,8 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
-        project: "./tsconfig.json", // ✅ Explicitly set TS config
-        tsconfigRootDir: __dirname, // ✅ Ensures correct path resolution
+        project: ["./tsconfig.json"], // ✅ Explicitly set TS config
+        tsconfigRootDir: process.cwd(), // ✅ Ensures correct path resolution
       },
     },
     plugins: {
