@@ -26,9 +26,10 @@ FROM python:3.12.7-slim
 WORKDIR /app
 
 # Install system dependencies again (small size, cached from first stage)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \
-    libglib2.0-0
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual environment from the previous stage
 COPY --from=base /venv /venv
