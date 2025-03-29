@@ -3,7 +3,7 @@ FROM python:3.12.7-slim AS base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
+    libgl1-mesa-glx22.3.6 \
     libglib2.0-0
 
 # Create a virtual environment to store dependencies
@@ -27,7 +27,7 @@ WORKDIR /app
 
 # Install system dependencies again (small size, cached from first stage)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
+    libgl1-mesa-glx22.3.6 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
