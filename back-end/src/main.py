@@ -14,11 +14,11 @@ from fastapi import (
     Header,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from .inference import classify_image
+from src.inference import classify_image
 import uuid
 from sqlalchemy.orm import Session
-from .database import database, models, schemas, crud
-from .utils import jwtService
+from src.database import database, models, schemas, crud
+from src.utils import jwtService
 from dotenv import load_dotenv
 
 load_dotenv()

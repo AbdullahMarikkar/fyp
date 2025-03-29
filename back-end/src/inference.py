@@ -1,6 +1,6 @@
 import torch
-from .model import SingleHeadModel
-from .preprocess import preprocess_image
+from src.model import SingleHeadModel
+from src.preprocess import preprocess_image
 
 
 def classify_image(image_path):
