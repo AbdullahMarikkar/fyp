@@ -60,14 +60,16 @@ print(
 )
 
 # Convert lists to NumPy arrays for AUC-ROC calculation
-all_labels = np.array(all_labels, dtype=np.int32)
-all_probs = np.array(all_probs, dtype=np.float32)
+all_labels = np.array(all_labels)
+all_probs = np.array(all_probs)  # Ensure all_probs is a NumPy array
 
+# Compute AUC-ROC for each class (One-vs-Rest approach)
 for i, class_name in enumerate(["heated", "natural", "synthetic"]):
     binary_labels = np.where(all_labels == i, 1, 0)  # Convert to binary labels
-    fpr, tpr, _ = roc_curve(binary_labels, all_probs[:, i])
-    auc_score = roc_auc_score(binary_labels, all_probs[:, i])
+    fpr, tpr, _ = roc_curve(binary_labels, all_probs[:, i])  # type: ignore
+    auc_score = roc_auc_score(binary_labels, all_probs[:, i])  # type: ignore
 
+    # Plot ROC curve
     plt.plot(fpr, tpr, label=f"{class_name} (AUC = {auc_score:.2f})")
 
 # Plot formatting
