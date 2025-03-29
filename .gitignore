@@ -11,3 +11,4 @@ back-end/data/enhanced
 back-end/data/images
 back-end/data/test
 .env
+back-end/docker-compose.yml
