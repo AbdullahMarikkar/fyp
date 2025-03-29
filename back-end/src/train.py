@@ -3,8 +3,8 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
-from preprocess import preprocess_image, load_labels, enhance_image
-from model import SingleHeadModel
+from .preprocess import preprocess_image, load_labels, enhance_image
+from .model import SingleHeadModel
 
 
 class ImageDataset(Dataset):

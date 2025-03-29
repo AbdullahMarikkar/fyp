@@ -9,11 +9,12 @@ import LoadingIndicator from "../../utils/LoadingIndication";
 function Login() {
   const navigate = useNavigate();
   const { logInFn, isPending } = useLogin();
+  // TODO : Modify UI
   // TODO : Increase Model Accuracy by Adding more Data, and Increase the Dataset by Manually Rotating, Resizing current Images
   // TODO : Currently On Page 4 of Natural Sapphire ( No Enhancement)
-  // TODO : Implement CICD Pipeline
-  // TODO : Create Docker Images and Deploy
-  // TODO : Modify UI
+  // TODO : Implement CICD Pipeline ( Need to add Docker Build to workflow)
+  // TODO : Create Docker Image ( Done )
+  // TODO : Deploy
   if (isPending) return <LoadingIndicator />;
 
   return (
@@ -138,7 +139,7 @@ function Login() {
                 >
                   <Button
                     variant="contained"
-                    sx={{ margin: "10px", background: "cyan" }}
+                    sx={{ margin: "10px", background: "rgb(71, 193, 206)" }}
                     onClick={() => navigate("/signup")}
                   >
                     Sign Up

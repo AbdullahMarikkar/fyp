@@ -9,7 +9,7 @@ function DashBoardScreen() {
     <Box
       sx={{
         background:
-          "linear-gradient(38deg, rgba(2,0,36,0.9747548677674195) 0%, rgba(223,228,141,1) 29%, rgba(255,0,189,1) 93%)",
+          "linear-gradient(38deg, rgba(2,0,36,0.9747548677674195) 0%, #dadcb2 29%, #8adaee 93%)",
         minWidth: "100vh",
         minHeight: "100vh",
         // opacity: "70%",
@@ -23,7 +23,11 @@ function DashBoardScreen() {
           padding: "10px",
         }}
       >
-        <Button onClick={() => navigate("/history")} variant="contained">
+        <Button
+          onClick={() => navigate("/history")}
+          variant="contained"
+          sx={{ borderRadius: "30px" }}
+        >
           History
         </Button>
         <Button
@@ -39,7 +43,7 @@ function DashBoardScreen() {
         textAlign="center"
         fontWeight="bold"
         fontSize="30px"
-        color="#FFD2A0"
+        color="#6d608c"
       >
         Inclusion Classifier
       </Typography>

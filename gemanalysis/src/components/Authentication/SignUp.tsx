@@ -5,6 +5,7 @@ import SignUpSchema from "./SignUpSchema";
 import { useSignUp } from "../../service/reactQueryFiles/useSignUp";
 import LoadingIndicator from "../../utils/LoadingIndication";
 import TextFieldUtil from "./TextFieldUtil";
+import { commonTextFieldStyle } from "../../utils/constants";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -53,8 +54,14 @@ function SignUp() {
             }}
             onSubmit={(values, { setSubmitting }) => {
               setTimeout(() => {
-                console.log(JSON.stringify(values, null, 2));
-                signUpFn({ ...values });
+                signUpFn(
+                  { ...values },
+                  {
+                    onSuccess() {
+                      navigate("/login");
+                    },
+                  }
+                );
                 setSubmitting(false);
               }, 400);
             }}
@@ -78,9 +85,10 @@ function SignUp() {
                   }}
                 >
                   <TextFieldUtil
-                    label="Enter Your Email"
-                    type="email"
-                    name="email"
+                    fieldName={"Email"}
+                    label={"Enter Your Email"}
+                    type={"email"}
+                    name={"email"}
                     values={values.email}
                     errors={errors.email}
                     handleBlur={handleBlur}
@@ -89,9 +97,10 @@ function SignUp() {
                   />
 
                   <TextFieldUtil
-                    label="Enter Your Username"
-                    type="text"
-                    name="username"
+                    fieldName={"Username"}
+                    label={"Enter Your Username"}
+                    type={"text"}
+                    name={"username"}
                     values={values.username}
                     errors={errors.username}
                     handleBlur={handleBlur}
@@ -100,9 +109,10 @@ function SignUp() {
                   />
 
                   <TextFieldUtil
-                    label="Enter Your Mobile Number"
-                    type="number"
-                    name="mobile"
+                    fieldName={"Mobile Number"}
+                    label={"Enter Your Mobile Number"}
+                    type={"text"}
+                    name={"mobile"}
                     values={values.mobile}
                     errors={errors.mobile}
                     handleBlur={handleBlur}
@@ -117,9 +127,7 @@ function SignUp() {
                       alignItems: "flex-start",
                     }}
                   >
-                    <Typography sx={{ color: "purple" }}>
-                      Mobile Number
-                    </Typography>
+                    <Typography sx={{ color: "purple" }}>Password</Typography>
                     <TextField
                       label="Enter Your Password"
                       type="password"
@@ -127,7 +135,7 @@ function SignUp() {
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      sx={{ borderRadius: "20px", border: 1, width: "100%" }}
+                      sx={commonTextFieldStyle}
                     />
                     {errors.password && touched.password && (
                       <Typography sx={{ fontSize: "10px", color: "red" }}>
@@ -147,7 +155,7 @@ function SignUp() {
                 >
                   <Button
                     variant="contained"
-                    sx={{ margin: "10px", background: "cyan" }}
+                    sx={{ margin: "10px", background: "rgb(71, 193, 206)" }}
                     onClick={() => navigate("/login")}
                   >
                     Log In

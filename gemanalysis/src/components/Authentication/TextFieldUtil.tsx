@@ -1,6 +1,8 @@
 import { Box, Typography, TextField } from "@mui/material";
+import { commonTextFieldStyle } from "../../utils/constants";
 
 function TextFieldUtil({
+  fieldName,
   values,
   handleChange,
   handleBlur,
@@ -10,6 +12,7 @@ function TextFieldUtil({
   label,
   name,
 }: {
+  fieldName: string;
   values: string | undefined;
   handleChange: any;
   handleBlur: any;
@@ -28,7 +31,7 @@ function TextFieldUtil({
         alignItems: "flex-start",
       }}
     >
-      <Typography sx={{ color: "purple" }}>Username</Typography>
+      <Typography sx={{ color: "purple" }}>{fieldName}</Typography>
       <TextField
         label={label}
         type={type}
@@ -36,7 +39,7 @@ function TextFieldUtil({
         value={values}
         onChange={handleChange}
         onBlur={handleBlur}
-        sx={{ borderRadius: "20px", border: 1, width: "100%" }}
+        sx={commonTextFieldStyle}
       />
       {errors && touched && (
         <Typography sx={{ fontSize: "10px", color: "red" }}>

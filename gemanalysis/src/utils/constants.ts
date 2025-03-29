@@ -9,15 +9,15 @@ export const commonTextFieldStyle = {
 
   "& .MuiOutlinedInput-root": {
     "&.Mui-focused fieldset": {
-      borderColor: "gold", // Change border color when focused
+      borderColor: "rgb(66, 141, 150)", // Change border color when focused
     },
     "&.Mui-focused:hover fieldset": {
-      borderColor: "gold !important", // Change border color on hover while focused
+      borderColor: "rgb(66, 141, 150) !important", // Change border color on hover while focused
     },
   },
   "& .MuiFormLabel-root": {
     "&.Mui-focused": {
-      color: "gold", // Change label color when focused
+      color: "rgb(66, 141, 150)", // Change label color when focused
     },
   },
 };
@@ -44,7 +44,7 @@ export const gridTableHeaderTextStyle: SxProps = {
   fontSize: { sm: 25, xs: 10 },
   padding: "5px",
   borderRadius: "5px",
-  backgroundColor: "#505050",
+  backgroundColor: "rgb(26, 33, 92)",
   color: "whitesmoke",
   textAlign: "center",
 };
@@ -53,19 +53,20 @@ export const gridTableItemStyle: SxProps = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "#B8B8B8",
+  // backgroundColor: "#B8B8B8",
   padding: { sm: "2px", xs: "2px" },
 };
 
 export const gridTableItemTextStyle: SxProps = {
-  fontWeight: 500,
-  color: "whitesmoke",
-  backgroundColor: "rgba(0,223,255,1)",
+  fontWeight: 550,
+  color: "rgb(33, 39, 95)",
+  background:
+    "linear-gradient(38deg, rgba(188, 201, 202, 0.97) 0%,rgb(161, 227, 203) 29%, #8adaee 93%)",
   width: "100%",
   height: "100%",
   padding: "5px",
   fontSize: { sm: 20, xs: 10 },
-  borderRadius: "5px",
+  borderRadius: "25px",
   textAlign: "center",
   display: "flex",
   justifyContent: "center",

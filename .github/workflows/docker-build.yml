@@ -1,0 +1,32 @@
+name: Docker Build and Push
+
+on:
+  workflow_run:
+    workflows: ["Super Linter"]
+    types:
+      - completed
+
+jobs:
+  build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Set up environment variables
+        run: echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
+
+      # Build and push gemanalysis image
+      - name: Build and push gemanalysis Docker image
+        run: |
+          cd gemanalysis
+          docker build -t abdzak/gemanalysis:${{ env.BUILD_NUMBER }} .
+          docker push abdzak/gemanalysis:${{ env.BUILD_NUMBER }}
+
+      - name: Logout from Docker Hub
+        run: docker logout

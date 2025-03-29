@@ -47,7 +47,11 @@ function History() {
           padding: "10px",
         }}
       >
-        <Button onClick={() => navigate("/")} variant="contained">
+        <Button
+          onClick={() => navigate("/")}
+          variant="contained"
+          sx={{ borderRadius: "30px" }}
+        >
           Home
         </Button>
         <Button
@@ -70,14 +74,13 @@ function History() {
         }}
       >
         <Typography
-          sx={{ color: "purple", fontSize: "25px" }}
+          sx={{ color: "purple", fontSize: "35px", paddingBottom: "20px" }}
           textAlign="center"
         >
           History
         </Typography>
         <Box
           sx={{
-            background: "#63d5e2",
             width: "100%",
             borderRadius: "5px",
             display: "flex",

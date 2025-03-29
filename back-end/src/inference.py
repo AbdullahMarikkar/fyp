@@ -1,6 +1,6 @@
 import torch
-from model import SingleHeadModel
-from preprocess import preprocess_image
+from .model import SingleHeadModel
+from .preprocess import preprocess_image
 
 
 def classify_image(image_path):
@@ -23,4 +23,4 @@ def classify_image(image_path):
 
 
 # Example usage
-classify_image("data/test/test1.jpg")
+# classify_image("data/test/test1.jpg")

@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timezone, timedelta
 from fastapi import HTTPException, status
-from database import crud, database, models
+from ..database import crud, database, models
 from dotenv import load_dotenv
 import os
 

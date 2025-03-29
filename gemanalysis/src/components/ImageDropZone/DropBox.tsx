@@ -56,7 +56,7 @@ const DropBoxContainer = {
   borderRadius: "10px",
   borderColor: (props: any) => getColor(props),
   borderStyle: "dashed",
-  backgroundColor: "#EFB6C8",
+  backgroundColor: "#abdaca",
   color: "black",
   fontWeight: "bold",
   fontSize: "1.4rem",
@@ -149,7 +149,7 @@ function DropBox({
           width: "90%",
           margin: "auto",
           marginTop: "20px",
-          backgroundColor: "#EFB6C8",
+          backgroundColor: "#abdaca",
           borderRadius: "10px",
         }}
       >
@@ -163,7 +163,18 @@ function DropBox({
             value={gemType}
             label="Gemstone Type"
             onChange={handleChange}
-            sx={{ minWidth: "200px" }}
+            sx={{
+              minWidth: "200px",
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "inherit", // Keep default border color
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgb(66, 141, 150)", // Change outline color on focus
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgb(66, 141, 150)", // Change outline color on hover
+              },
+            }}
           >
             {gemStones.map((gem, i) => {
               return (

@@ -13,3 +13,5 @@ To Run Backend :
 Go to backend Folder
 run "pip install"
 Then run "uvicorn src.main:app --host localhost --port 8000 --reload" on command shell
+
+to run front-end on docker : docker run -p 3000:80 gemanalysis

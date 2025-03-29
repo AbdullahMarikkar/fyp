@@ -14,11 +14,11 @@ from fastapi import (
     Header,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from inference import classify_image
+from .inference import classify_image
 import uuid
 from sqlalchemy.orm import Session
-from database import database, models, schemas, crud
-from utils import jwtService
+from .database import database, models, schemas, crud
+from .utils import jwtService
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -33,7 +33,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "http://localhost",
+    "http://localhost:3000",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -53,12 +53,6 @@ def get_db():
         db.close()
 
 
-# TODO : Connect Backend to Front End
-# TODO : Receive Image from From Front End and Save it in data Folder
-# TODO : Analyze that image and send the result
-# TODO : Modify UI and Backend Endpoints
-# TODO : Modify Machine Learning Process
-
 imgPath = "data/test"
 
 
@@ -70,15 +64,10 @@ async def root():
 
 @app.post("/classify")
 async def classifyImage(file: UploadFile = File(...), gemType: str = Form(...)):
-    print("Gem", gemType)
     file.filename = f"{uuid.uuid4()}.jpg"
     contents = await file.read()
     with open(f"{imgPath}/{file.filename}", "wb") as f:
         f.write(contents)
-
-    #############################################
-    # newImg = cv2.imread(f"{imgPath}/test1.jpg")
-    # cv2.imwrite(f"{imgPath}/new.jpg",newImg)
 
     classified = classify_image(f"{imgPath}/{file.filename}")
     return {
@@ -140,7 +129,7 @@ async def login(
     if not ACCESS_TOKEN_EXPIRE_MINUTES.isdigit():
         raise ValueError("ACCESS_TOKEN_EXPIRE_MINUTES must be a valid number.")
     db_user = crud.get_user_by_email(db, email=user.email)
-    if not bcrypt.checkpw(
+    if not db_user or not bcrypt.checkpw(
         bytes(user.password, "utf-8"), bytes(db_user.password, "utf-8")
     ):
         print("Password is Incorrect")
