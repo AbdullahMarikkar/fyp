@@ -2,8 +2,8 @@ import os
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from .model import SingleHeadModel
-from .preprocess import preprocess_image, load_labels
+from model import SingleHeadModel
+from preprocess import preprocess_image, load_labels
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import classification_report, roc_curve, roc_auc_score
 
@@ -66,7 +66,7 @@ all_probs = np.array(all_probs)
 # Compute AUC-ROC for each class (One-vs-Rest approach)
 for i, class_name in enumerate(["heated", "natural", "synthetic"]):
     binary_labels = (all_labels == i).astype(
-        int
+        np.int64
     )  # Convert labels to binary (One-vs-Rest)
     fpr, tpr, _ = roc_curve(binary_labels, all_probs[:, i])
     auc_score = roc_auc_score(binary_labels, all_probs[:, i])
