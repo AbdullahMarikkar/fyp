@@ -28,7 +28,6 @@ function History() {
   if (isLoading) {
     return <LoadingIndicator />;
   }
-  console.log("History", history?.data);
 
   return (
     <Box

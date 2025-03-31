@@ -33,7 +33,7 @@ image_dir = "data/images/"
 
 # Initialize dataset and DataLoader
 dataset = ImageDataset(image_dir, labels, label_map)
-data_loader = DataLoader(dataset, batch_size=39, shuffle=True)
+data_loader = DataLoader(dataset, batch_size=324, shuffle=True)
 
 # Load the trained model and evaluate
 model = SingleHeadModel()

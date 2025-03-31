@@ -22,7 +22,8 @@ const ModalStyle: SxProps = {
   padding: "10px",
   width: "350px",
   height: "350px",
-  backgroundColor: "#FFD2A0",
+  background:
+    "linear-gradient(38deg, rgba(223, 232, 233, 0.97) 0%,rgb(173, 223, 205) 29%, #a7dfed 93%)",
 };
 
 function ResultModal({
@@ -62,11 +63,35 @@ function ResultModal({
   return (
     <Modal open={open && message.result !== undefined} onClose={handleSubmit}>
       <Box sx={ModalStyle}>
-        <Typography textAlign="center">This is Result Modal</Typography>
+        <Typography
+          textAlign="center"
+          fontSize={"18px"}
+          fontWeight={600}
+          color="#31606c"
+        >
+          Result
+        </Typography>
         <ShowImage images={sentImage} />
-        <Typography>{message.result}</Typography>
+        <Box
+          sx={{
+            background:
+              "linear-gradient(38deg, rgba(180, 180, 180, 0.97) 0%,rgb(141, 224, 193) 29%, #65cce5 93%)",
+            borderRadius: "30px",
+          }}
+        >
+          <Typography textAlign={"center"}>
+            {message.result.toUpperCase()}
+          </Typography>
+        </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "10px",
+          }}
+        >
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
@@ -91,7 +116,18 @@ function ResultModal({
               />
             </Box>
           </RadioGroup>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{
+              background:
+                "linear-gradient(38deg, rgba(151, 141, 141, 0.97) 0%,rgb(93, 189, 154) 29%, #3da4be 93%)",
+              borderRadius: "30px",
+              width: "50%",
+            }}
+          >
+            Submit
+          </Button>
         </Box>
       </Box>
     </Modal>
