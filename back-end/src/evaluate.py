@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,32 +9,36 @@ from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import classification_report, roc_curve, roc_auc_score
 
 
-class ImageDataset(Dataset):
-    def __init__(self, image_dir, labels, label_map):
+class TestDataset(Dataset):
+    def __init__(self, image_dir, test_filenames, labels, label_map):
         self.image_dir = image_dir
+        self.test_filenames = test_filenames  # List of test image filenames
         self.labels = labels
         self.label_map = label_map
-        self.image_list = list(labels.keys())  # List of filenames
 
     def __len__(self):
-        return len(self.image_list)
+        return len(self.test_filenames)
 
     def __getitem__(self, idx):
-        filename = self.image_list[idx]
+        filename = self.test_filenames[idx]
         label = self.labels[filename]
         image_path = os.path.join(self.image_dir, filename)
         img = preprocess_image(image_path)
         return img, self.label_map[label]
 
 
+# Load test filenames
+test_df = pd.read_csv("data/test_split.csv")
+test_filenames = test_df["filename"].tolist()
+
 # Define label mapping and load labels
 label_map = {"heated": 0, "natural": 1, "synthetic": 2}
 labels = load_labels("data/labels.csv")
 image_dir = "data/images/"
 
-# Initialize dataset and DataLoader
-dataset = ImageDataset(image_dir, labels, label_map)
-data_loader = DataLoader(dataset, batch_size=324, shuffle=True)
+# Load test dataset
+test_dataset = TestDataset(image_dir, test_filenames, labels, label_map)
+test_loader = DataLoader(test_dataset, batch_size=141, shuffle=False)
 
 # Load the trained model and evaluate
 model = SingleHeadModel()
@@ -45,7 +50,7 @@ all_preds = []
 all_probs = []
 
 with torch.no_grad():
-    for imgs, labels in data_loader:
+    for imgs, labels in test_loader:
         outputs = model(imgs)
         probs = torch.softmax(outputs, dim=1)
         _, preds = torch.max(outputs, 1)

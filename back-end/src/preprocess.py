@@ -38,7 +38,7 @@ def preprocess_image(image_path):
     return img
 
 
-def enhance_image(img, save_dir=None, filename=None):
+def histogram_equalization(img, save_dir=None, filename=None):
     """Enhance image using histogram equalization."""
     img_np = img.permute(1, 2, 0).numpy() * 255.0
     img_np = img_np.astype("uint8")
@@ -64,3 +64,24 @@ def enhance_image(img, save_dir=None, filename=None):
 
     transform = transforms.ToTensor()
     return transform(img)
+
+
+def gaussian_blur(
+    img_tensor, kernel_size=(3, 3), sigma=0.5, save_dir=None, filename=None
+):
+    # Convert tensor to numpy array in RGB format
+    img_np = img_tensor.permute(1, 2, 0).numpy() * 255.0
+    img_np = img_np.astype("uint8")
+
+    # Apply Gaussian blur
+    blurred_img = cv2.GaussianBlur(img_np, kernel_size, sigmaX=sigma)
+
+    # Optionally save
+    if save_dir and filename:
+        os.makedirs(save_dir, exist_ok=True)
+        save_path = os.path.join(save_dir, f"blurred_{filename}")
+        cv2.imwrite(save_path, cv2.cvtColor(blurred_img, cv2.COLOR_RGB2BGR))
+
+    # Convert back to tensor
+    transform = transforms.ToTensor()
+    return transform(blurred_img)
