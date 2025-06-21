@@ -7,6 +7,8 @@ from model import SingleHeadModel
 from preprocess import preprocess_image, load_labels
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import classification_report, roc_curve, roc_auc_score
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 
 class TestDataset(Dataset):
@@ -30,6 +32,9 @@ class TestDataset(Dataset):
 # Load test filenames
 test_df = pd.read_csv("data/test_split.csv")  # TODO : Change to test_split
 test_filenames = test_df["filename"].tolist()  # TODO : Change to filename
+
+# test_df = pd.read_csv("data/train_split.csv")
+# test_filenames = test_df["filename"].tolist()
 
 # Define label mapping and load labels
 label_map = {"heated": 0, "natural": 1, "synthetic": 2}
@@ -63,6 +68,33 @@ print(
         all_labels, all_preds, target_names=["heated", "natural", "synthetic"]
     )
 )
+
+# ==============================================================================
+print("\n--- Generating Confusion Matrix ---")
+# Compute confusion matrix
+cm = confusion_matrix(all_labels, all_preds)
+
+# Create a new figure for the confusion matrix plot
+plt.figure(figsize=(8, 6))
+
+# Use seaborn to create a visually appealing heatmap
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["heated", "natural", "synthetic"],
+    yticklabels=["heated", "natural", "synthetic"],
+)
+
+# Add labels and a title
+plt.title("Confusion Matrix")
+plt.ylabel("True Label")
+plt.xlabel("Predicted Label")
+
+# Display the plot
+plt.show()
+# ==============================================================================
 
 # Convert lists to NumPy arrays for AUC-ROC calculation
 all_labels = np.array(all_labels)

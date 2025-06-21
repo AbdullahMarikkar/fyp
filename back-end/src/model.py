@@ -17,7 +17,7 @@ class SingleHeadModel(nn.Module):
         # parameter, e.g., models.squeezenet1_0(weights=models.SqueezeNet1_0_Weights.DEFAULT)
         # I am using `pretrained=True` to match your original code.
 
-        self.base_model = models.squeezenet1_0(pretrained=True)
+        self.base_model = models.mobilenet_v3_large(pretrained=True)
         # self.base_model = models.resnet18(pretrained=True)
         # self.base_model = models.efficientnet_v2_s(pretrained=True)
 
@@ -41,7 +41,7 @@ class SingleHeadModel(nn.Module):
             )
             self.base_model.num_classes = 3  # Update the model's class count attribute
 
-        elif model_name == "EfficientNet":
+        elif model_name in ["EfficientNet"]:
             # EfficientNet models have a Linear layer at the end of their classifier sequence.
             num_input_features = self.base_model.classifier[-1].in_features
             # We replace the entire classifier with a new sequence containing our Linear layer.
@@ -50,7 +50,14 @@ class SingleHeadModel(nn.Module):
                 nn.Linear(num_input_features, 3),  # 3 output classes
             )
 
-        elif model_name in ["ResNet", "VGG", "AlexNet", "Inception3"]:
+        elif model_name in [
+            "ResNet",
+            "VGG",
+            "AlexNet",
+            "Inception3",
+            "ShuffleNetV2",
+            "MobileNetV3",
+        ]:
             # ResNet and similar models use a single Linear layer named 'fc'.
             if hasattr(self.base_model, "fc"):
                 num_input_features = self.base_model.fc.in_features

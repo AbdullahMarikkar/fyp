@@ -5,7 +5,7 @@ from torchvision import transforms
 import tqdm
 
 
-def augment_and_save(original_image_path, output_dir, num_versions=2):
+def augment_and_save(original_image_path, output_dir, num_versions=4):
     """
     Loads an image, applies different sets of augmentations, and saves
     the new versions. Returns a list of the new filenames.
@@ -45,7 +45,26 @@ def augment_and_save(original_image_path, output_dir, num_versions=2):
         ]
     )
 
-    pipelines = [augment_v1, augment_v2]
+    # --- NEW: Pipeline 3: Perspective Transform + Grayscale ---
+    # This creates a "zoomed-in" or "skewed" look and converts to grayscale
+    augment_v3 = transforms.Compose(
+        [
+            transforms.RandomPerspective(distortion_scale=0.2, p=1.0),
+            transforms.Grayscale(
+                num_output_channels=3
+            ),  # Keep 3 channels for model compatibility
+        ]
+    )
+
+    # --- NEW: Pipeline 4: Center Crop + Hue Adjustment ---
+    # This forces the model to learn from the center of the image with a different color cast
+    augment_v4 = transforms.Compose(
+        [  # Resize back to standard size
+            transforms.ColorJitter(hue=0.2, saturation=0.3),
+        ]
+    )
+
+    pipelines = [augment_v1, augment_v2, augment_v3, augment_v4]
 
     for i, pipeline in enumerate(pipelines[:num_versions]):
         augmented_image = pipeline(image)
@@ -82,7 +101,7 @@ def create_augmented_dataset(original_csv_path, image_dir, output_csv_path):
         # 2. Generate and save augmented versions
         original_image_path = os.path.join(image_dir, original_filename)
         augmented_filenames = augment_and_save(
-            original_image_path, image_dir, num_versions=2
+            original_image_path, image_dir, num_versions=4
         )
 
         # 3. Add augmented image info to our new list

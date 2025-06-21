@@ -8,7 +8,9 @@
     "gensalt",
     "hashedpassword",
     "hashpw",
+    "mobilenet",
     "sessionmaker",
+    "shufflenet",
     "squeezenet"
   ]
 }

@@ -58,23 +58,26 @@ train_indices, test_indices = indices[:train_size], indices[train_size:]
 train_dataset = torch.utils.data.Subset(dataset, train_indices)
 test_dataset = torch.utils.data.Subset(dataset, test_indices)
 
+train_filenames = [dataset.image_list[i] for i in train_indices]
+train_df = pd.DataFrame({"filename": train_filenames})
+train_df.to_csv("data/train_split.csv", index=False)
+
 # Save test dataset filenames to a CSV file
 test_filenames = [dataset.image_list[i] for i in test_indices]
 test_df = pd.DataFrame({"filename": test_filenames})
 test_df.to_csv("data/test_split.csv", index=False)
 
-train_loader = DataLoader(
-    dataset, batch_size=200, shuffle=True
-)  # TODO Change to train dataset
+
+train_loader = DataLoader(train_dataset, batch_size=200, shuffle=True)
 
 # Initialize model, loss function, and optimizer
 model = SingleHeadModel()
-# criterion = nn.CrossEntropyLoss() # TODO
-criterion = nn.CrossEntropyLoss(weight=torch.tensor([1.1, 1.0, 1.2]))
-optimizer = optim.Adam(model.parameters(), lr=0.00100)
+
+criterion = nn.CrossEntropyLoss(weight=torch.tensor([1.1, 1.0, 1.3]))
+optimizer = optim.Adam(model.parameters(), lr=0.00125)
 
 # Training loop
-num_epochs = 40
+num_epochs = 35
 best_loss = float("inf")
 for epoch in range(num_epochs):
     model.train()
