@@ -44,7 +44,7 @@ export const sendSatisfaction = async ({
     gem_type
   );
 
-  const { data } = await axiosInstance.post("/save", {
+  const { data } = await axiosInstance.post("/users/history/save", {
     filename,
     result,
     satisfactory,
@@ -55,7 +55,7 @@ export const sendSatisfaction = async ({
 };
 
 export const getHistory = async () => {
-  const { data } = await axiosInstance.get("/history");
+  const { data } = await axiosInstance.get("/users/history");
 
   return data;
 };

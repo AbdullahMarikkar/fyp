@@ -8,7 +8,7 @@ export const login = async ({
   password: string;
 }) => {
   console.log(email, password);
-  const { data, status } = await axiosInstance.post(`/login`, {
+  const { data, status } = await axiosInstance.post(`/users/login`, {
     email,
     password,
   });
@@ -30,7 +30,7 @@ export const signup = async ({
   password: string;
 }) => {
   console.log(email, username, mobile, password);
-  const { data, status } = await axiosInstance.post(`/signup`, {
+  const { data, status } = await axiosInstance.post(`/users/signup`, {
     email,
     name: username,
     mobile: `${mobile}`,
