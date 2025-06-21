@@ -3,8 +3,8 @@ import pandas as pd
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from src.model import SingleHeadModel
-from src.preprocess import preprocess_image, load_labels
+from model import SingleHeadModel
+from preprocess import preprocess_image, load_labels
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import classification_report, roc_curve, roc_auc_score
 
@@ -28,12 +28,12 @@ class TestDataset(Dataset):
 
 
 # Load test filenames
-test_df = pd.read_csv("data/test_split.csv")
-test_filenames = test_df["filename"].tolist()
+test_df = pd.read_csv("data/test_split.csv")  # TODO : Change to test_split
+test_filenames = test_df["filename"].tolist()  # TODO : Change to filename
 
 # Define label mapping and load labels
 label_map = {"heated": 0, "natural": 1, "synthetic": 2}
-labels = load_labels("data/labels.csv")
+labels = load_labels("data/labels_augmented.csv")
 image_dir = "data/images/"
 
 # Load test dataset
@@ -42,7 +42,7 @@ test_loader = DataLoader(test_dataset, batch_size=141, shuffle=False)
 
 # Load the trained model and evaluate
 model = SingleHeadModel()
-model.load_state_dict(torch.load("model.pth"))
+model.load_state_dict(torch.load("best_model.pth"))
 model.eval()
 
 all_labels = []

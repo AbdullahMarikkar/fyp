@@ -5,13 +5,13 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
-from src.preprocess import (
+from preprocess import (
     preprocess_image,
     load_labels,
     gaussian_blur,
     histogram_equalization,
 )
-from src.model import SingleHeadModel
+from model import SingleHeadModel
 
 
 class ImageDataset(Dataset):
@@ -38,7 +38,7 @@ class ImageDataset(Dataset):
 
 # Define label mapping and load labels
 label_map = {"heated": 0, "natural": 1, "synthetic": 2}
-labels = load_labels("data/labels.csv")
+labels = load_labels("data/labels_augmented.csv")
 image_dir = "data/images/"
 
 # Load dataset and initialize DataLoader
@@ -48,7 +48,7 @@ dataset = ImageDataset(image_dir, labels, label_map, augment=False)
 indices = np.random.permutation(len(dataset))  # Generate shuffled indices
 
 # Compute train-test split sizes
-train_size = int(0.70 * len(dataset))
+train_size = int(0.75 * len(dataset))
 test_size = len(dataset) - train_size
 
 # Split dataset using shuffled indices
@@ -63,16 +63,18 @@ test_filenames = [dataset.image_list[i] for i in test_indices]
 test_df = pd.DataFrame({"filename": test_filenames})
 test_df.to_csv("data/test_split.csv", index=False)
 
-train_loader = DataLoader(train_dataset, batch_size=330, shuffle=True)
+train_loader = DataLoader(
+    dataset, batch_size=200, shuffle=True
+)  # TODO Change to train dataset
 
 # Initialize model, loss function, and optimizer
 model = SingleHeadModel()
 # criterion = nn.CrossEntropyLoss() # TODO
-criterion = nn.CrossEntropyLoss(weight=torch.tensor([1.2, 1.0, 1.4]))
-optimizer = optim.Adam(model.parameters(), lr=0.00150)
+criterion = nn.CrossEntropyLoss(weight=torch.tensor([1.1, 1.0, 1.2]))
+optimizer = optim.Adam(model.parameters(), lr=0.00100)
 
 # Training loop
-num_epochs = 100
+num_epochs = 40
 best_loss = float("inf")
 for epoch in range(num_epochs):
     model.train()

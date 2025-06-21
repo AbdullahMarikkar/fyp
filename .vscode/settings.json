@@ -4,9 +4,11 @@
     "autoflush",
     "checkpw",
     "dotenv",
+    "efficientnet",
     "gensalt",
     "hashedpassword",
     "hashpw",
-    "sessionmaker"
+    "sessionmaker",
+    "squeezenet"
   ]
 }
