@@ -45,5 +45,12 @@ def save_result(db: Session, result: Result, user_id: int):
     return db_result
 
 
+def delete_result(db: Session, result_id: int):
+    gem = db.get(Gem, id=result_id)
+    db.delete(gem)
+    db.commit()
+    return {"success": True}
+
+
 def get_results(db: Session, user_id: int):
     return db.query(Gem).filter(Gem.user_id == user_id).all()
