@@ -1,12 +1,12 @@
 import os
-from fastapi import (
-    FastAPI,
-)
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 from src.database import database, models
 from dotenv import load_dotenv
 from src.controllers import user_controller, classify_controller
 from src.middleware import authorize_middleware
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # TODO : Add Remove Record From History method and make sure to add appropriate CRUD Operations
 # TODO : Improve Error Handling and Polish as much as you can
@@ -20,6 +20,34 @@ ACCESS_TOKEN_EXPIRE_MINUTES = ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv(
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return Response.JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "Client Error", "message": exc.detail},
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return Response.JSONResponse(
+        status_code=422,
+        content={"error": "Validation Error", "message": exc.errors()},
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return Response.JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal Server Error",
+            "message": "An unexpected error occurred. Please try again later.",
+        },
+    )
+
 
 app.add_middleware(authorize_middleware.AuthMiddleware)
 
