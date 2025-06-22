@@ -13,7 +13,7 @@ def load_labels(csv_path):
 def preprocess_image(image_path):
     """Load and preprocess the image."""
     img = cv2.imread(image_path)
-    img = cv2.resize(img, (224, 224))
+    img = cv2.resize(img, (299, 299))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     # Apply transformations
@@ -29,7 +29,7 @@ def preprocess_image(image_path):
             transforms.ColorJitter(
                 brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1
             ),  # Adjust color
-            transforms.RandomResizedCrop(size=224, scale=(0.8, 1.0)),
+            transforms.RandomResizedCrop(size=299, scale=(0.8, 1.0)),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ]

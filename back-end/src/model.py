@@ -17,7 +17,7 @@ class SingleHeadModel(nn.Module):
         # parameter, e.g., models.squeezenet1_0(weights=models.SqueezeNet1_0_Weights.DEFAULT)
         # I am using `pretrained=True` to match your original code.
 
-        self.base_model = models.mobilenet_v3_large(pretrained=True)
+        self.base_model = models.resnet152can(pretrained=True)
         # self.base_model = models.resnet18(pretrained=True)
         # self.base_model = models.efficientnet_v2_s(pretrained=True)
 
@@ -32,7 +32,7 @@ class SingleHeadModel(nn.Module):
         # Get the name of the model's class to identify its family
         model_name = self.base_model.__class__.__name__
 
-        if model_name == "SqueezeNet":
+        if model_name in ["SqueezeNet"]:
             # SqueezeNet uses a Conv2d layer at index 1 of its classifier for classification.
             # We get its input channels and replace it with a new Conv2d layer for our 3 classes.
             num_input_channels = self.base_model.classifier[1].in_channels
@@ -51,12 +51,14 @@ class SingleHeadModel(nn.Module):
             )
 
         elif model_name in [
-            "ResNet",
             "VGG",
-            "AlexNet",
-            "Inception3",
             "ShuffleNetV2",
             "MobileNetV3",
+            "Inception3",
+            "ResNet",
+            "EfficientNetV2",
+            "ConvNeXt",
+            "VisionTransformer",
         ]:
             # ResNet and similar models use a single Linear layer named 'fc'.
             if hasattr(self.base_model, "fc"):
@@ -81,4 +83,12 @@ class SingleHeadModel(nn.Module):
 
     def forward(self, x):
         """Defines the forward pass; it simply calls the entire modified base model."""
-        return self.base_model(x)
+        outputs = self.base_model(x)
+
+        # During training, InceptionV3 returns a special InceptionOutputs object.
+        # We must extract the primary output (logits) for the loss calculation.
+        if self.training and isinstance(outputs, models.inception.InceptionOutputs):
+            return outputs.logits
+
+        # During evaluation, or for other models, it returns a single tensor.
+        return outputs
