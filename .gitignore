@@ -13,3 +13,6 @@ back-end/data/test
 .env
 back-end/docker-compose.yml
 back-end/data/gaussian
+back-end/best-model.pth
+back-end/model.pth
+
