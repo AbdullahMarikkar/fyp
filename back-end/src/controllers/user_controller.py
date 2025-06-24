@@ -66,3 +66,10 @@ async def save_user_result(
     return await user_service.save_classification_result(
         db=db, result=result, user_id=user_payload.id
     )
+
+
+@router.delete("/history/:id")
+async def delete_history_record(
+    result_id: Request.path_params.id, db: Session = Depends(get_db)
+):
+    return await user_service.delete_history_record(db, result_id)

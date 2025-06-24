@@ -93,3 +93,13 @@ async def get_user_history_with_images(db: Session, user_id: int):
             status_code=500,
             detail="An unexpected error occurred while fetching history.",
         )
+
+
+async def delete_history_record(db: Session, result_id: int):
+    try:
+        return crud.delete_result(Session, result_id)
+    except SQLAlchemyError:
+        raise HTTPException(
+            status_code=500,
+            detail="A database error occurred while deleting a history record",
+        )

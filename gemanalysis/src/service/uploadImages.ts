@@ -59,3 +59,9 @@ export const getHistory = async () => {
 
   return data;
 };
+
+export const deleteHistoryRecord = async ({ id }: { id: number }) => {
+  const { data } = await axiosInstance.delete(`/users/history/${id}`);
+
+  return data;
+};
