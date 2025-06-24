@@ -13,5 +13,11 @@ back-end/data/test
 .env
 back-end/docker-compose.yml
 back-end/data/gaussian
+<<<<<<< HEAD
 back-end/model.pth
 back-end/best_model.pth
+=======
+back-end/best-model.pth
+back-end/model.pth
+
+>>>>>>> e9714fd (Update .gitignore)
