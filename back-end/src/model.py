@@ -17,7 +17,7 @@ class SingleHeadModel(nn.Module):
         # parameter, e.g., models.squeezenet1_0(weights=models.SqueezeNet1_0_Weights.DEFAULT)
         # I am using `pretrained=True` to match your original code.
 
-        self.base_model = models.resnet152can(pretrained=True)
+        self.base_model = models.efficientnet_v2_s(pretrained=True)
         # self.base_model = models.resnet18(pretrained=True)
         # self.base_model = models.efficientnet_v2_s(pretrained=True)
 

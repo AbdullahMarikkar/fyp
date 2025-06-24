@@ -74,7 +74,7 @@ train_loader = DataLoader(train_dataset, batch_size=200, shuffle=True)
 model = SingleHeadModel()
 
 criterion = nn.CrossEntropyLoss(weight=torch.tensor([1.1, 1.0, 1.3]))
-optimizer = optim.Adam(model.parameters(), lr=0.00150)
+optimizer = optim.Adam(model.parameters(), lr=0.00125)
 
 # Training loop
 num_epochs = 30
