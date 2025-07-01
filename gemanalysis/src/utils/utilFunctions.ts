@@ -1,3 +1,7 @@
 export function wordFirstLetterUppercase(word: string) {
-  return word[0].toLocaleUpperCase() + word.slice(1);
+  if (word.length > 0) {
+    return word[0].toLocaleUpperCase() + word.slice(1);
+  } else {
+    return "";
+  }
 }

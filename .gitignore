@@ -15,3 +15,4 @@ back-end/docker-compose.yml
 back-end/data/gaussian
 back-end/model.pth
 back-end/best_model.pth
+gemanalysis/coverage

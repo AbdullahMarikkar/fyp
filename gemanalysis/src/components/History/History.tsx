@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import {
+  gridTableButtonStyle,
   gridTableHeaderStyle,
   gridTableHeaderTextStyle,
   gridTableItemStyle,
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { wordFirstLetterUppercase } from "../../utils/utilFunctions";
 import { removeAccessTokenFromCookie } from "../../utils/cookieService";
 import LoadingIndicator from "../../utils/LoadingIndication";
+import { useDeleteHistory } from "../../service/reactQueryFiles/useDeleteHistory";
 
 export interface HistoryType {
   id: number;
@@ -24,8 +26,9 @@ export interface HistoryType {
 
 function History() {
   const navigate = useNavigate();
-  const { history, isLoading } = useGetHistory();
-  if (isLoading) {
+  const { history, isLoading, refetch } = useGetHistory();
+  const { deleteHistoryFn, isPending } = useDeleteHistory();
+  if (isLoading || isPending) {
     return <LoadingIndicator />;
   }
 
@@ -105,6 +108,11 @@ function History() {
             <Grid size={"grow"} sx={gridTableHeaderStyle}>
               <Typography sx={gridTableHeaderTextStyle}>Satisfied</Typography>
             </Grid>
+            <Grid size={"grow"} sx={gridTableHeaderStyle}>
+              <Typography sx={gridTableHeaderTextStyle}>
+                Delete Record
+              </Typography>
+            </Grid>
           </Grid>
           {history?.data.map((gems: HistoryType, i: number) => {
             return (
@@ -143,6 +151,25 @@ function History() {
                   <Typography sx={gridTableItemTextStyle}>
                     {wordFirstLetterUppercase(gems.satisfactory)}
                   </Typography>
+                </Grid>
+                <Grid size={"grow"} sx={gridTableItemStyle}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={gridTableButtonStyle}
+                    onClick={() =>
+                      deleteHistoryFn(
+                        { id: gems.id },
+                        {
+                          onSuccess() {
+                            refetch();
+                          },
+                        }
+                      )
+                    }
+                  >
+                    Delete
+                  </Button>
                 </Grid>
               </Grid>
             );

@@ -1,4 +1,5 @@
 import os
+import cv2
 import pandas as pd
 import torch
 import numpy as np
@@ -117,3 +118,101 @@ plt.title("AUC-ROC Curve")
 plt.legend()
 plt.grid()
 plt.show()
+
+
+def visualize_feature_maps(model, image_path, true_label):
+    """
+    Generates and displays a heatmap of the model's feature activation
+    using a forward hook, without modifying the model's code.
+    """
+    # Ensure the model is in evaluation mode
+    model.eval()
+
+    # 1. Load and preprocess the image
+    original_img = cv2.imread(image_path)
+    original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+    processed_img = preprocess_image(image_path)
+    processed_img = processed_img.unsqueeze(0)  # Add batch dimension
+
+    # --- New Hook-Based Logic ---
+
+    # A. Create a placeholder to store the feature maps
+    feature_maps = []
+
+    # B. Define the hook function that will capture the output of the target layer
+    def hook_function(module, input, output):
+        feature_maps.append(output)
+
+    # C. Register the hook on the desired layer
+    # For ShuffleNetV2, 'conv5' is the last convolutional block before the final classifier.
+    # This gives us the richest feature representation.
+    target_layer = model.base_model.conv5
+    hook = target_layer.register_forward_hook(hook_function)
+
+    # 2. Get the model's final output (the hook will automatically capture the features)
+    with torch.no_grad():
+        output = model(processed_img)
+
+    # D. Remove the hook immediately after use to keep the model clean
+    hook.remove()
+
+    # 3. Get the prediction
+    _, pred_idx = torch.max(output, 1)
+    label_map = {0: "heated", 1: "natural", 2: "synthetic"}
+    predicted_label = label_map[pred_idx.item()]
+
+    # 4. Process the captured feature maps to create a heatmap
+    # We take the first item since we only processed one image
+    captured_features = feature_maps[0]
+    heatmap = torch.mean(captured_features[0], dim=0).cpu().numpy()
+
+    # Normalize the heatmap
+    heatmap = np.maximum(heatmap, 0)
+    heatmap /= np.max(heatmap)
+
+    # Resize the heatmap and apply a colormap
+    heatmap = cv2.resize(heatmap, (original_img.shape[1], original_img.shape[0]))
+    heatmap = np.uint8(255 * heatmap)
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+
+    # 5. Overlay the heatmap on the original image
+    superimposed_img = cv2.addWeighted(original_img, 0.6, heatmap, 0.4, 0)
+
+    # 6. Plot the results
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+    fig.suptitle(f"True: {true_label} | Predicted: {predicted_label}", fontsize=16)
+
+    ax1.imshow(original_img)
+    ax1.set_title("Original Image")
+    ax1.axis("off")
+
+    ax2.imshow(superimposed_img)
+    ax2.set_title("Feature Map Heatmap")
+    ax2.axis("off")
+
+    plt.show()
+
+
+# --- HOW TO USE THE FUNCTION (This part remains the same) ---
+
+if __name__ == "__main__":
+    # Load your trained model
+    model = SingleHeadModel()
+    model.load_state_dict(torch.load("model.pth"))  # Make sure the path is correct
+
+    # Create visualizations for a few sample images
+    # Replace these with actual paths to your test images
+    sample_images = {
+        "data/images/img1.jpg": "natural",
+        "data/images/img5.jpg": "heated",
+        "data/images/img7.jpg": "natural",
+        "data/images/img8.jpg": "natural",
+        "data/images/S(H)115.jpg": "heated",
+        "data/images/S(N)144.jpg": "natural",
+        "data/images/S(N)146.jpg": "natural",
+        "data/images/S(S)29.jpg": "synthetic",
+        "data/images/S(S)31.jpg": "synthetic",
+    }
+
+    for img_path, true_label in sample_images.items():
+        visualize_feature_maps(model, img_path, true_label)

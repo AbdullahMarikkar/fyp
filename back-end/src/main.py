@@ -24,29 +24,29 @@ app = FastAPI()
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return Response.JSONResponse(
-        status_code=exc.status_code,
-        content={"error": "Client Error", "message": exc.detail},
-    )
+    return {
+        "status_code": exc.status_code,
+        "content": {"error": "Client Error", "message": exc.detail},
+    }
 
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return Response.JSONResponse(
-        status_code=422,
-        content={"error": "Validation Error", "message": exc.errors()},
-    )
+    return {
+        "status_code": 422,
+        "content": {"error": "Validation Error", "message": exc.errors()},
+    }
 
 
 @app.exception_handler(Exception)
-async def generic_exception_handler(request: Request, exc: Exception):
-    return Response.JSONResponse(
-        status_code=500,
-        content={
+async def generic_exception_handler(response: Response, exc: Exception):
+    return {
+        "status_code": 500,
+        "content": {
             "error": "Internal Server Error",
             "message": "An unexpected error occurred. Please try again later.",
         },
-    )
+    }
 
 
 app.add_middleware(authorize_middleware.AuthMiddleware)

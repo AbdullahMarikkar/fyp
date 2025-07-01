@@ -72,3 +72,18 @@ export const gridTableItemTextStyle: SxProps = {
   justifyContent: "center",
   alignItems: "center",
 };
+
+export const gridTableButtonStyle: SxProps = {
+  fontWeight: 550,
+  background:
+    "linear-gradient(38deg, rgba(205, 85, 67, 0.97) 0%,rgb(201, 122, 98) 29%,rgb(184, 46, 36) 93%)",
+  width: "80%",
+  height: "50%",
+  padding: "5px",
+  fontSize: { sm: 15, xs: 10 },
+  borderRadius: "25px",
+  textAlign: "center",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};

@@ -3,6 +3,7 @@ import { getHistory } from "../uploadImages";
 
 export function useGetHistory() {
   const {
+    refetch,
     isLoading,
     data: history,
     error,
@@ -11,5 +12,5 @@ export function useGetHistory() {
     queryFn: getHistory,
   });
 
-  return { isLoading, error, history };
+  return { isLoading, error, history, refetch };
 }

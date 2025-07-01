@@ -68,8 +68,7 @@ async def save_user_result(
     )
 
 
-@router.delete("/history/:id")
-async def delete_history_record(
-    result_id: Request.path_params.id, db: Session = Depends(get_db)
-):
-    return await user_service.delete_history_record(db, result_id)
+@router.delete("/history/{id}")
+async def delete_history_record(id: int, db: Session = Depends(get_db)):
+    print("History ID", id)
+    return await user_service.delete_history_record(db, id)

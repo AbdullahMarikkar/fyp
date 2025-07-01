@@ -97,7 +97,7 @@ async def get_user_history_with_images(db: Session, user_id: int):
 
 async def delete_history_record(db: Session, result_id: int):
     try:
-        return crud.delete_result(Session, result_id)
+        return crud.delete_result(db, result_id)
     except SQLAlchemyError:
         raise HTTPException(
             status_code=500,

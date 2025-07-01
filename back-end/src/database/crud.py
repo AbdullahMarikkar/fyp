@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from src.database.database import SessionLocal
 from src.database.models import User, Gem
@@ -46,7 +47,9 @@ def save_result(db: Session, result: Result, user_id: int):
 
 
 def delete_result(db: Session, result_id: int):
-    gem = db.get(Gem, id=result_id)
+    gem = db.get(Gem, result_id)
+    if not gem:
+        raise HTTPException(status_code=404, detail="Result not found")
     db.delete(gem)
     db.commit()
     return {"success": True}
